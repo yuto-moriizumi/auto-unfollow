@@ -26,7 +26,7 @@ app.use('/users', usersRouter);
 
 // ダミー
 app.get('/', (req, res) => {
-  res.status(200).send('welcome to shizudaisei finder 2 api server');
+  res.status(200).send('Welcome to auto unfollow api server!');
 });
 
 // catch 404 and forward to error handler
