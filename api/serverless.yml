@@ -1,4 +1,4 @@
-﻿service: shizudaisei-finder-2-api
+﻿service: auto-unfollow
 
 provider:
   name: aws
@@ -12,10 +12,10 @@ functions:
     events:
       - http:
           method: ANY
-          path: "/"
+          path: '/'
       - http:
           method: ANY
-          path: "{proxy+}"
+          path: '{proxy+}'
 
 # webpackでコードをまとめ、トランスコンパイルする
 plugins:
