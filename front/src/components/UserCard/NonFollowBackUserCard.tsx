@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Card, Col, Row, Image, Button, Container } from 'react-bootstrap';
-import LazyLoad from 'react-lazyload';
+import { Col, Row, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import User from '../../utils/User.d';
 
-import BeforeAddState from './BeforeAddState';
-import WaitingAddState from './WaitingAddState';
-import AddFailureState from './AddFailureState';
-import BeforeUnfollowState from './BeforeUnfollowState';
-import WaitingUnfollowState from './WaitingUnfollowState';
-import UnfollowFailureState from './UnfollowFailureState';
-import UnfollowSuccessState from './UnfollowSuccessState';
+import BeforeAddState from './WhitelistButtonState/BeforeAddState';
+import WaitingAddState from './WhitelistButtonState/WaitingAddState';
+import AddFailureState from './WhitelistButtonState/AddFailureState';
+import BeforeUnfollowState from './UnfollowButtonState/BeforeUnfollowState';
+import WaitingUnfollowState from './UnfollowButtonState/WaitingUnfollowState';
+import UnfollowFailureState from './UnfollowButtonState/UnfollowFailureState';
+import UnfollowSuccessState from './UnfollowButtonState/UnfollowSuccessState';
+import UserCard from './UserCard';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 if (!SERVER_URL) console.error('SERVER_URL must be specified');
@@ -77,60 +77,30 @@ const NonFollowBackUserCard: React.VFC<Props> = (props: Props) => {
   }
 
   return (
-    <Card key={user.id} className="mb-4">
-      <Card.Header className="p-2">
-        <Container fluid>
-          <Row>
-            <Col className="px-0" xs="2">
-              <LazyLoad height={48}>
-                <Image
-                  fluid
-                  src={user.img_url}
-                  alt={`${user.screen_name}のサムネイル`}
-                  style={{ maxHeight: '48px' }}
-                  width="48px"
-                  height="48px"
-                />
-              </LazyLoad>
-            </Col>
-            <Col className="pl-1 pr-0" xs="10">
-              <Card.Link
-                href={`https://twitter.com/${user.screen_name}`}
-                target="_blank"
-              >
-                <h6 className="mb-0">{user.name}</h6>
-                <small>@{user.screen_name}</small>
-              </Card.Link>
-            </Col>
-          </Row>
-        </Container>
-      </Card.Header>
-      <Card.Body className="p-3">{user.profile}</Card.Body>
-      <Card.Footer>
-        <Row className="px-2">
-          <Col xs="auto" className="px-0 ml-auto">
-            <Button
-              size="sm"
-              variant={whitelistButtonState.variant}
-              disabled={whitelistButtonState.disabled}
-              onClick={whitelistButtonState.disabled ? undefined : toWhitelist}
-            >
-              {whitelistButtonState.display}
-            </Button>
-          </Col>
-          <Col xs="auto" className="px-0 ml-auto">
-            <Button
-              size="sm"
-              variant={unfollowButtonState.variant}
-              disabled={unfollowButtonState.disabled}
-              onClick={unfollowButtonState.disabled ? undefined : unfollow}
-            >
-              {unfollowButtonState.display}
-            </Button>
-          </Col>
-        </Row>
-      </Card.Footer>
-    </Card>
+    <UserCard user={user}>
+      <Row className="px-2">
+        <Col xs="auto" className="px-0 ml-auto">
+          <Button
+            size="sm"
+            variant={whitelistButtonState.variant}
+            disabled={whitelistButtonState.disabled}
+            onClick={whitelistButtonState.disabled ? undefined : toWhitelist}
+          >
+            {whitelistButtonState.display}
+          </Button>
+        </Col>
+        <Col xs="auto" className="px-0 ml-auto">
+          <Button
+            size="sm"
+            variant={unfollowButtonState.variant}
+            disabled={unfollowButtonState.disabled}
+            onClick={unfollowButtonState.disabled ? undefined : unfollow}
+          >
+            {unfollowButtonState.display}
+          </Button>
+        </Col>
+      </Row>
+    </UserCard>
   );
 };
 
