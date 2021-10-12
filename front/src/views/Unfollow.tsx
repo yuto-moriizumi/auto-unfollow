@@ -25,7 +25,8 @@ const Unfollow: React.VFC = () => {
   async function unfollowAll() {
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users) {
-      unfollow(user);
+      console.log(user.id);
+      // unfollow(user);
       // eslint-disable-next-line no-await-in-loop
       await new Promise((resolve) =>
         setTimeout(resolve, AUTO_UNFOLLOW_INTERVAL_MS)
@@ -41,9 +42,9 @@ const Unfollow: React.VFC = () => {
   return (
     <>
       <h1>WhiteList</h1>
-      {whitelist.map((user) => (
+      {/* {whitelist.map((user) => (
         <UserCard user={user} />
-      ))}
+      ))} */}
       <h1>Non-Follow-Backs</h1>
       <Button onClick={() => unfollowAll()}>Auto-Unfollow</Button>
       {users.map((user) => (

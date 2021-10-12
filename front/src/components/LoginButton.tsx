@@ -10,7 +10,7 @@ class LoginButton extends React.Component<Props, {}> {
     const { auth0 } = this.props;
     const { loginWithRedirect } = auth0;
     return (
-      <Button block variant="primary" onClick={() => loginWithRedirect()}>
+      <Button variant="primary" onClick={() => loginWithRedirect()}>
         ログイン
       </Button>
     );

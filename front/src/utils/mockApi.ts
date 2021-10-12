@@ -14,9 +14,7 @@ export default function enableMock() {
       screen_name: 'TaroTanaka',
       img_url:
         'https://pbs.twimg.com/profile_images/1219493965000368129/ObOXnQp7_400x400.jpg',
-      content: '今日はいい天気',
-      created_at: '2020-11-12 13:14:15',
-      is_following: false,
+      profile: '今日はいい天気',
     },
     {
       id: '0151029123',
@@ -24,20 +22,11 @@ export default function enableMock() {
       screen_name: 'TaroTanaka',
       img_url:
         'https://pbs.twimg.com/profile_images/1219493965000368129/ObOXnQp7_400x400.jpg',
-      content: '今日はいい天気',
-      created_at: '2020-11-12 13:14:15',
-      is_following: false,
+      profile: '今日はいい天気',
     },
   ];
 
-  mockAxios.onGet(`${SERVER_URL}/users`).reply(() => [
-    200,
-    USERS.map((user) => {
-      const user2 = user;
-      delete user2.is_following;
-      return user2;
-    }),
-  ]);
+  mockAxios.onGet(`${SERVER_URL}/users`).reply(() => [200, USERS]);
   mockAxios.onGet(`${SERVER_URL}/users/search`).reply(() => [200, USERS]);
   mockAxios.onPost(`${SERVER_URL}/users/follow`).reply(() => [201, null]);
   mockAxios.onGet(`${SERVER_URL}/users/update`).reply(() => [200, null]);

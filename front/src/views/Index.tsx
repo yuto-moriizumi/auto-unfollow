@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import PromiseButton from '../components/UserCard/PromiseButton';
 
 const ResTypo = lazy(() => import('../components/ResTypo'));
 
@@ -22,9 +23,45 @@ const Index: React.VFC = () => (
         Auto
         Unfollowは、Twitterユーザーを一括フォロー解除できる便利なアプリです。
       </ResTypo>
-      <Link to="search">
+      <Link to="unfollow">
         <Button size="lg">Twitterでログイン</Button>
       </Link>
+      <br />
+      <br />
+      <br />
+      <br />
+      <PromiseButton<string>
+        variants={{
+          initial: {
+            variant: 'primary',
+            display: <>initial</>,
+            disabled: false,
+          },
+          resolving: {
+            variant: 'primary',
+            display: <>resolving</>,
+            disabled: true,
+          },
+          resolved: {
+            variant: 'success',
+            display: <>resolved</>,
+            disabled: true,
+          },
+          rejected: {
+            variant: 'danger',
+            display: <>rejected</>,
+            disabled: true,
+          },
+        }}
+        onClick={async () => {
+          console.log('HEAVY PROCESS START');
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          return 'test';
+        }}
+        resolve={(res: string) => {
+          console.log(`HEAVY PROCESS END with ${res}`);
+        }}
+      />
       <p className="mt-3">
         ©2021 森泉友登
         <address>

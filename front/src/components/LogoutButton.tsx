@@ -10,7 +10,6 @@ class LogoutButton extends React.Component<Props, {}> {
     const { auth0 } = this.props;
     return (
       <Button
-        block
         variant="danger"
         onClick={() =>
           auth0.logout({
