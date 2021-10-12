@@ -96,7 +96,6 @@ async function getWhiteListId(rwClient: TwitterApiReadWrite) {
       private: true,
     });
     if (list.errors) return new ErrorResponse(500, { errors: list.errors });
-
     whitelist_id = list.data.id;
   } else {
     whitelist_id = whitelists[0].id_str;
