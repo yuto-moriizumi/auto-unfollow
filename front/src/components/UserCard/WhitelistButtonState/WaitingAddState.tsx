@@ -1,6 +1,6 @@
 import React from 'react';
 import { Spinner } from 'react-bootstrap';
-import ButtonState from './ButtonState';
+import ButtonState from '../ButtonState';
 
 export default class WaitingAddState implements ButtonState {
   display = (
