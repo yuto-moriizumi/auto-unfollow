@@ -1,8 +1,8 @@
 import React from 'react';
 import ButtonState from './ButtonState';
 
-export default class BeforeFollowState implements ButtonState {
-  display = <>フォロー</>;
+export default class BeforeAddState implements ButtonState {
+  display = (<>To Whitelist</>);
 
   variant = 'primary';
 
