@@ -15,10 +15,6 @@ const CONSUMER_KEYSET = {
   appKey: process.env.TWITTER_CONSUMER_KEY ?? 'TWITTER_CONSUMER_KEY',
   appSecret: process.env.TWITTER_CONSUMER_SECRET ?? 'TWITTER_CONSUMER_SECRET',
 };
-const AUTH0_KEYSET = {
-  clientId: process.env.AUTH0_CLIENT_ID ?? 'AUTH0_CLIENT_ID',
-  clientSecret: process.env.AUTH0_CLIENT_SECRET ?? 'AUTH0_CLIENT_SECRET',
-};
 
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
@@ -52,16 +48,21 @@ type AuthUser = {
   user_id: string;
 };
 
+/**
+ * 認証したユーザのアクセストークンを取得
+ * @param {string} auth0_id
+ * @param {boolean} [retry=true]
+ * @returns {(Promise<AuthUser | ErrorResponse>)}
+ */
 async function getAuthUser(
   auth0_id: string,
   retry = true
 ): Promise<AuthUser | ErrorResponse> {
-  // 認証したユーザのアクセストークンを取得
-  // console.log(AUTH0_KEYSET);
   const { ManagementClient } = auth0;
   const management = new ManagementClient({
     domain: AUTH0_DOMAIN,
-    ...AUTH0_KEYSET,
+    clientId: process.env.AUTH0_BACK_CLIENT_ID,
+    clientSecret: process.env.AUTH0_BACK_CLIENT_SECRET,
   });
   try {
     const user = await management.getUser({ id: auth0_id });
@@ -111,13 +112,16 @@ router.get('/', checkJwt, async (req, res) => {
       .send({ errors: ['token does not contain user information'] });
     return;
   }
+  const token = req.headers.authorization?.split('Bearer ')[1];
+  console.log(token);
 
   // 認証しているユーザのTwitterアクセストークンを取得
-  const auth_user = await getAuthUser(req.user.sub);
+  const auth_user = await getAuthUser(req.user.sub, false, token);
   if (auth_user instanceof ErrorResponse) {
     res.status(auth_user.status).send(auth_user.body);
     return;
   }
+
   // Twitterインスタンス化
   const client = new Twitter({
     ...CONSUMER_KEYSET,

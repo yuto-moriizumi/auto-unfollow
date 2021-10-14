@@ -17,7 +17,7 @@ export default function App() {
   if (isLoading) return <h1>LOADING</h1>;
   return (
     <Suspense fallback={<h1>LOADING</h1>}>
-      <Navbar bg="light" expand="md">
+      <Navbar expand="md" className="px-4">
         <Navbar.Brand>
           <Link to="/">
             <ResTypo as="span" classes={['h3', 'h2', 'h2', 'h2', 'h2']}>
@@ -27,8 +27,8 @@ export default function App() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ml-auto my-auto">
-            <Nav.Item className="mr-1">
+          <Nav className="ms-auto my-auto">
+            <Nav.Item className="me-1">
               <a
                 className="twitter-share-button btn btn-info"
                 href="https://twitter.com/share?text=Auto Unfollowで一括フォロー解除！&url=https://shizudaisei-finder-2.yuto-moriizumi.net/&related=kurvarian,YutoMoriizumi&lang=ja&show-count=false"

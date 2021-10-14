@@ -12,26 +12,28 @@ if (!SERVER_URL) console.error('SERVER_URL must be specified');
 type Props = {
   user: User;
   towhitelist: (user: User) => void;
+  dispatch?: number;
 };
 
 const NonFollowBackUserCard: React.VFC<Props> = (props: Props) => {
-  const { user, towhitelist } = props;
+  const { user, towhitelist, dispatch } = props;
 
   return (
     <UserCard user={user}>
       <Row className="px-2">
-        <Col xs="auto" className="px-0 ml-auto">
+        <Col xs="auto" className="px-0 ms-auto">
           <ToWhitelistButton
             user_id={user.id}
             resolve={() => towhitelist(user)}
           />
         </Col>
-        <Col xs="auto" className="px-0 ml-auto">
-          <UnfollowButton user_id={user.id} />
+        <Col xs="auto" className="px-0 ms-auto">
+          <UnfollowButton user_id={user.id} dispatch={dispatch} />
         </Col>
       </Row>
     </UserCard>
   );
 };
+NonFollowBackUserCard.defaultProps = { dispatch: 0 };
 
 export default NonFollowBackUserCard;

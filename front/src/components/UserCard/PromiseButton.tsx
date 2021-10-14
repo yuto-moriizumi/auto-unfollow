@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, ButtonProps } from 'react-bootstrap';
 import { ButtonVariant } from 'react-bootstrap/esm/types';
 
@@ -21,6 +21,7 @@ type Props<T> = {
     resolved: ButtonProfile;
     rejected: ButtonProfile;
   };
+  dispatch?: number;
 };
 const BUTTON_STATE = {
   initial: 'initial',
@@ -30,11 +31,11 @@ const BUTTON_STATE = {
 } as const;
 type BUTTON_STATE_T = typeof BUTTON_STATE[keyof typeof BUTTON_STATE];
 
-type PromiseButtonComponent = <T>(
-  props: Props<T>
-) => React.ReactElement<Props<T>>;
+export type PromiseButtonComponent = <T>(props: Props<T>) => React.ReactElement;
+
 const PromiseButton: PromiseButtonComponent = (props) => {
-  const { size, onClick, resolve, reject, finallyFnc, variants } = props;
+  const { size, onClick, resolve, reject, finallyFnc, variants, dispatch } =
+    props;
   const [skin, setSkin] = useState<BUTTON_STATE_T>(BUTTON_STATE.initial);
 
   const promiseFnc = () => {
@@ -52,6 +53,20 @@ const PromiseButton: PromiseButtonComponent = (props) => {
       )
       .finally(finallyFnc);
   };
+
+  // refをtrueで初期化。
+  const ref = useRef(true);
+
+  useEffect(() => {
+    // 初回レンダリング時はrefをfalseにして、return。
+    if (ref.current) {
+      ref.current = false;
+      return;
+    }
+    if (skin !== BUTTON_STATE.initial) return; // 初期状態以外では反応しない
+    // 2回目以降に実行される
+    promiseFnc();
+  }, [dispatch]);
 
   return (
     <Button

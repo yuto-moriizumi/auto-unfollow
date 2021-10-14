@@ -10,20 +10,18 @@ if (!SERVER_URL) console.error('SERVER_URL must be specified');
 type Props = {
   size?: ButtonProps['size'];
   user_id: string;
-  dispatch?: number;
+  resolve: () => void;
 };
 
-const UnfollowButton = ({ size, user_id, dispatch }: Props) => {
+const RemoveButton = ({ size, user_id, resolve }: Props) => {
   const { getAccessTokenSilently } = useAuth0();
-
   return (
     <PromiseButton<AxiosResponse<any>>
       size={size}
-      dispatch={dispatch}
       variants={{
         initial: {
           variant: 'primary',
-          display: <>Unfollow</>,
+          display: <>Remove</>,
           disabled: false,
         },
         resolving: {
@@ -39,8 +37,8 @@ const UnfollowButton = ({ size, user_id, dispatch }: Props) => {
           disabled: true,
         },
         resolved: {
-          variant: 'success',
-          display: <>Unfollowed</>,
+          variant: 'primary',
+          display: <>Moved</>,
           disabled: true,
         },
         rejected: {
@@ -50,18 +48,18 @@ const UnfollowButton = ({ size, user_id, dispatch }: Props) => {
         },
       }}
       onClick={async () =>
-        axios.delete(`${SERVER_URL}/follow/${user_id}`, {
+        axios.delete(`${SERVER_URL}/whitelist/${user_id}`, {
           headers: {
             authorization: `Bearer ${await getAccessTokenSilently()}`,
           },
         })
       }
+      resolve={resolve}
       reject={(e) => console.error(e)}
     />
   );
 };
-UnfollowButton.defaultProps = {
+RemoveButton.defaultProps = {
   size: undefined,
-  dispatch: 0,
 };
-export default UnfollowButton;
+export default RemoveButton;
