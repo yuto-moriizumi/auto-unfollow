@@ -148,7 +148,6 @@ router.get('/users', checkJwt, async (req, res) => {
     followers.data.forEach((user) => {
       nfb_dict.delete(user.id);
     });
-    const non_follow_backs = Array.from(nfb_dict.values());
 
     // ホワイトリストを取得
     const whitelist_id = await getWhiteListId(rwClient);
@@ -160,6 +159,12 @@ router.get('/users', checkJwt, async (req, res) => {
       list_id: whitelist_id,
     });
 
+    // ホワイトリストのメンバーをNFBから除外
+    whitelist.users.forEach((user) => {
+      nfb_dict.delete(user.id_str);
+    });
+
+    const non_follow_backs = Array.from(nfb_dict.values());
     // console.log({ non_follow_backs, whitelist: whitelist.users });
     res.send({ non_follow_backs, whitelist: whitelist.users });
   } catch (error) {
