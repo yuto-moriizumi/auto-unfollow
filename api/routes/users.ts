@@ -92,8 +92,7 @@ async function getWhiteListId(rwClient: TwitterApiReadWrite) {
     // 存在しない場合は新規作成
     const list = await rwClient.v2.createList({
       name: WHITELIST_NAME,
-      description:
-        'Whitelist for Auto Unfollow web application. You can modify members directly from twitter. You can delete this when you are no longer using the application.',
+      description: 'Whitelist for Auto Unfollow web application.',
       private: true,
     });
     if (list.errors) return new ErrorResponse(500, { errors: list.errors });
@@ -112,51 +111,53 @@ router.get('/', checkJwt, async (req, res) => {
       .send({ errors: ['token does not contain user information'] });
     return;
   }
-  const token = req.headers.authorization?.split('Bearer ')[1];
-  console.log(token);
+  try {
+    // 認証しているユーザのTwitterアクセストークンを取得
+    const auth_user = await getAuthUser(req.user.sub, false);
+    if (auth_user instanceof ErrorResponse) {
+      res.status(auth_user.status).send(auth_user.body);
+      return;
+    }
 
-  // 認証しているユーザのTwitterアクセストークンを取得
-  const auth_user = await getAuthUser(req.user.sub, false, token);
-  if (auth_user instanceof ErrorResponse) {
-    res.status(auth_user.status).send(auth_user.body);
-    return;
+    // Twitterインスタンス化
+    const client = new Twitter({
+      ...CONSUMER_KEYSET,
+      accessToken: auth_user.access_token,
+      accessSecret: auth_user.access_token_secret,
+    });
+    const rwClient = client.readWrite;
+
+    // TODO: ページネーションを使って全フォロワーを取得
+    const followings = await rwClient.v2.following(auth_user.user_id, {
+      max_results: 1000,
+      'user.fields': 'description,profile_image_url',
+    });
+    const followers = await rwClient.v2.followers(auth_user.user_id, {
+      max_results: 1000,
+      'user.fields': 'description,profile_image_url',
+    });
+
+    // 非フォロバユーザのみをフィルタ
+    const non_follow_backs = followings.data.filter(
+      (user) => !followers.data.some((user2) => user.id === user2.id)
+    );
+
+    // ホワイトリストを取得
+    const whitelist_id = await getWhiteListId(rwClient);
+    if (whitelist_id instanceof ErrorResponse) {
+      res.status(whitelist_id.status).send(whitelist_id.body);
+      return;
+    }
+    const whitelist = await rwClient.v1.listMembers({
+      list_id: whitelist_id,
+    });
+
+    console.log({ non_follow_backs, whitelist: whitelist.users });
+    res.send({ non_follow_backs, whitelist: whitelist.users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ errors: error });
   }
-
-  // Twitterインスタンス化
-  const client = new Twitter({
-    ...CONSUMER_KEYSET,
-    accessToken: auth_user.access_token,
-    accessSecret: auth_user.access_token_secret,
-  });
-  const rwClient = client.readWrite;
-
-  // TODO: ページネーションを使って全フォロワーを取得
-  const followings = await rwClient.v2.following(auth_user.user_id, {
-    max_results: 1000,
-    'user.fields': 'description,profile_image_url',
-  });
-  const followers = await rwClient.v2.followers(auth_user.user_id, {
-    max_results: 1000,
-    'user.fields': 'description,profile_image_url',
-  });
-
-  // 非フォロバユーザのみをフィルタ
-  const non_follow_backs = followings.data.filter(
-    (user) => !followers.data.some((user2) => user.id === user2.id)
-  );
-
-  // ホワイトリストを取得
-  const whitelist_id = await getWhiteListId(rwClient);
-  if (whitelist_id instanceof ErrorResponse) {
-    res.status(whitelist_id.status).send(whitelist_id.body);
-    return;
-  }
-  const whitelist = await rwClient.v1.listMembers({
-    list_id: whitelist_id,
-  });
-
-  console.log({ non_follow_backs, whitelist: whitelist.users });
-  res.send({ non_follow_backs, whitelist: whitelist.users });
 });
 
 // フォロー解除
