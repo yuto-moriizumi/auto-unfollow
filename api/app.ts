@@ -22,12 +22,7 @@ app.use(Express.urlencoded({ extended: true }));
 app.use(compression()); // gzip圧縮して返す
 
 // apiルータへ
-app.use('/users', usersRouter);
-
-// ダミー
-app.get('/', (req, res) => {
-  res.status(200).send('Welcome to auto unfollow api server!');
-});
+app.use('/', usersRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => next(createError(404)));

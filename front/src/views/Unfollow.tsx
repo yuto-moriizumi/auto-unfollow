@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import NonFollowBackUserCard from '../components/UserCard/NonFollowBackUserCard';
 import WhitelistUserCard from '../components/UserCard/WhitelistUserCard';
 import User from '../utils/User.d';
@@ -25,8 +25,8 @@ const Unfollow: React.VFC = () => {
           },
         });
         setWhitelist(res.data.whitelist);
+        setDispatches(res.data.non_follow_backs.map((user: any, i: any) => i));
         setUsers(res.data.non_follow_backs);
-        setDispatches(res.data.users.map((user: any, i: any) => i));
       } catch (error) {
         console.error(error);
       }
@@ -56,21 +56,49 @@ const Unfollow: React.VFC = () => {
   };
 
   return (
-    <>
-      <h1>WhiteList</h1>
-      {whitelist.map((user) => (
-        <WhitelistUserCard user={user} remove={remove} />
-      ))}
-      <h1>Non-Follow-Backs</h1>
-      <Button onClick={() => unfollowAll()}>Auto-Unfollow</Button>
-      {users.map((user, i) => (
-        <NonFollowBackUserCard
-          user={user}
-          towhitelist={toWhitelist}
-          dispatch={dispatches[i]}
-        />
-      ))}
-    </>
+    <Container fluid className="px-2">
+      <Container>
+        <h1>WhiteList</h1>
+      </Container>
+      <Row className="mt-2 pt-2 g-4">
+        {whitelist.map((user) => (
+          <Col key={user.id} className="mt-2">
+            <WhitelistUserCard user={user} remove={remove} />
+          </Col>
+        ))}
+      </Row>
+      <Container>
+        <Row>
+          <Col>
+            <h1>Non-Follow-Backs</h1>
+          </Col>
+          <Col>
+            <Button onClick={() => unfollowAll()} size="lg">
+              Auto-Unfollow
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+      <Row className="mt-2 pt-2 g-4">
+        {users.map((user, i) => (
+          <Col
+            xs={12}
+            sm={6}
+            md={4}
+            lg={3}
+            xl={2}
+            key={user.id}
+            className="mt-2"
+          >
+            <NonFollowBackUserCard
+              user={user}
+              towhitelist={toWhitelist}
+              dispatch={dispatches[i]}
+            />
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 };
 

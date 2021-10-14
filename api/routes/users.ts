@@ -16,6 +16,11 @@ const CONSUMER_KEYSET = {
   appSecret: process.env.TWITTER_CONSUMER_SECRET ?? 'TWITTER_CONSUMER_SECRET',
 };
 
+// ダミー
+router.get('/', (req, res) => {
+  res.status(200).send('Welcome to auto unfollow api server!');
+});
+
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
     cache: true,
@@ -104,7 +109,7 @@ async function getWhiteListId(rwClient: TwitterApiReadWrite) {
 }
 
 // ホワイトリストユーザの一覧と、非フォロバユーザの一覧を取得
-router.get('/', checkJwt, async (req, res) => {
+router.get('/users', checkJwt, async (req, res) => {
   if (!req.user) {
     res
       .status(403)
