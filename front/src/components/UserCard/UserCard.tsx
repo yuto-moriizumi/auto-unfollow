@@ -19,8 +19,8 @@ const UserCard: React.FC<Props> = (props) => {
               <LazyLoad height={48}>
                 <Image
                   fluid
-                  src={user.img_url}
-                  alt={`${user.screen_name}のサムネイル`}
+                  src={user.profile_image_url}
+                  alt={`${user.user_name}のサムネイル`}
                   style={{ maxHeight: '48px' }}
                   width="48px"
                   height="48px"
@@ -29,17 +29,17 @@ const UserCard: React.FC<Props> = (props) => {
             </Col>
             <Col className="pl-1 pr-0" xs="10">
               <Card.Link
-                href={`https://twitter.com/${user.screen_name}`}
+                href={`https://twitter.com/${user.user_name}`}
                 target="_blank"
               >
                 <h6 className="mb-0">{user.name}</h6>
-                <small>@{user.screen_name}</small>
+                <small>@{user.user_name}</small>
               </Card.Link>
             </Col>
           </Row>
         </Container>
       </Card.Header>
-      <Card.Body className="p-3">{user.profile}</Card.Body>
+      <Card.Body className="p-3">{user.description}</Card.Body>
       <Card.Footer>{children}</Card.Footer>
     </Card>
   );

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, ButtonProps } from 'react-bootstrap';
 import { ButtonVariant } from 'react-bootstrap/esm/types';
 
-type ButtonProfile = {
+type Buttondescription = {
   display: JSX.Element;
   variant: ButtonVariant;
   disabled: boolean;
@@ -16,10 +16,10 @@ type Props<T> = {
   reject?: (value: any) => void;
   finallyFnc?: () => void;
   variants: {
-    initial: ButtonProfile;
-    resolving: ButtonProfile;
-    resolved: ButtonProfile;
-    rejected: ButtonProfile;
+    initial: Buttondescription;
+    resolving: Buttondescription;
+    resolved: Buttondescription;
+    rejected: Buttondescription;
   };
   dispatch?: number;
 };

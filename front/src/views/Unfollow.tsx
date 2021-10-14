@@ -25,7 +25,7 @@ const Unfollow: React.VFC = () => {
           },
         });
         setWhitelist(res.data.whitelist);
-        setUsers(res.data.users);
+        setUsers(res.data.non_follow_backs);
         setDispatches(res.data.users.map((user: any, i: any) => i));
       } catch (error) {
         console.error(error);

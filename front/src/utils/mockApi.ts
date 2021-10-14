@@ -11,18 +11,18 @@ export default function enableMock() {
     {
       id: '0151029122',
       name: 'Taro Tanaka',
-      screen_name: 'TaroTanaka',
-      img_url:
-        'https://pbs.twimg.com/profile_images/1219493965000368129/ObOXnQp7_400x400.jpg',
-      profile: '今日はいい天気',
+      user_name: 'TaroTanaka',
+      profile_image_url:
+        'https://pbs.twimg.com/description_images/1219493965000368129/ObOXnQp7_400x400.jpg',
+      description: '今日はいい天気',
     },
     {
       id: '0151029123',
       name: 'Taro Tanaka',
-      screen_name: 'TaroTanaka',
-      img_url:
-        'https://pbs.twimg.com/profile_images/1219493965000368129/ObOXnQp7_400x400.jpg',
-      profile: '今日はいい天気',
+      user_name: 'TaroTanaka',
+      profile_image_url:
+        'https://pbs.twimg.com/description_images/1219493965000368129/ObOXnQp7_400x400.jpg',
+      description: '今日はいい天気',
     },
   ];
 

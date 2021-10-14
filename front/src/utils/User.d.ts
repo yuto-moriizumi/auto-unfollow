@@ -1,7 +1,7 @@
 export default interface User {
   id: string;
   name: string;
-  screen_name: string;
-  img_url: string;
-  profile: string;
+  user_name: string;
+  profile_image_url: string;
+  description: string;
 }
