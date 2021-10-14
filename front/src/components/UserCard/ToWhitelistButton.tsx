@@ -48,11 +48,15 @@ const ToWhitelistButton = ({ size, user_id, resolve }: Props) => {
         },
       }}
       onClick={async () =>
-        axios.put(`${SERVER_URL}/whitelist/${user_id}`, {
-          headers: {
-            authorization: `Bearer ${await getAccessTokenSilently()}`,
-          },
-        })
+        axios.put(
+          `${SERVER_URL}/whitelist/${user_id}`,
+          {},
+          {
+            headers: {
+              authorization: `Bearer ${await getAccessTokenSilently()}`,
+            },
+          }
+        )
       }
       resolve={resolve}
       reject={(e) => console.error(e)}
