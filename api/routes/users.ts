@@ -1,7 +1,7 @@
 import express from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
-import Twitter, { TwitterApiReadWrite } from 'twitter-api-v2';
+import Twitter, { TwitterApiReadWrite, UserV2 } from 'twitter-api-v2';
 import auth0 from 'auth0';
 import ErrorResponse from '../ErrorResponse';
 
@@ -138,9 +138,12 @@ router.get('/', checkJwt, async (req, res) => {
     });
 
     // 非フォロバユーザのみをフィルタ
-    const non_follow_backs = followings.data.filter(
-      (user) => !followers.data.some((user2) => user.id === user2.id)
-    );
+    const nfb_dict = new Map<string, UserV2>();
+    followings.data.forEach((user) => nfb_dict.set(user.id, user));
+    followers.data.forEach((user) => {
+      nfb_dict.delete(user.id);
+    });
+    const non_follow_backs = Array.from(nfb_dict.values());
 
     // ホワイトリストを取得
     const whitelist_id = await getWhiteListId(rwClient);
@@ -152,7 +155,7 @@ router.get('/', checkJwt, async (req, res) => {
       list_id: whitelist_id,
     });
 
-    console.log({ non_follow_backs, whitelist: whitelist.users });
+    // console.log({ non_follow_backs, whitelist: whitelist.users });
     res.send({ non_follow_backs, whitelist: whitelist.users });
   } catch (error) {
     console.error(error);
