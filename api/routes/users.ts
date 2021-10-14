@@ -192,13 +192,17 @@ router.delete('/follow/:user_id', checkJwt, async (req, res) => {
   });
   const rwClient = client.readWrite;
 
-  // フォロー解除
-  const result = await rwClient.v2.unfollow(auth_user.user_id, user_id);
-  if (!result.data.following) {
-    res.status(204).send();
-    return;
+  try {
+    // フォロー解除
+    const result = await rwClient.v2.unfollow(auth_user.user_id, user_id);
+    if (!result.data.following) {
+      res.status(204).send();
+      return;
+    }
+    res.status(500).send({ error: result.errors });
+  } catch (error) {
+    res.status(500).send({ errors: error });
   }
-  res.status(500).send({ error: result.errors });
 });
 
 // ホワイトリストにユーザを追加
