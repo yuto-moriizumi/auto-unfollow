@@ -10,10 +10,12 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 if (!SERVER_URL) console.error('SERVER_URL must be specified');
 const AUTO_UNFOLLOW_INTERVAL_MS = 500;
 
+type DispatchDict = { [key: string]: number };
+
 const Unfollow: React.VFC = () => {
   const [whitelist, setWhitelist] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [dispatches, setDispatches] = useState<number[]>([]);
+  const [dispatches, setDispatches] = useState<DispatchDict>({});
   const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
@@ -25,7 +27,11 @@ const Unfollow: React.VFC = () => {
           },
         });
         setWhitelist(res.data.whitelist);
-        setDispatches(res.data.non_follow_backs.map((user: any, i: any) => i));
+        const dict: DispatchDict = {};
+        res.data.non_follow_backs.forEach((user: User) => {
+          dict[user.id] = 0;
+        });
+        setDispatches(dict);
         setUsers(res.data.non_follow_backs);
       } catch (error) {
         console.error(error);
@@ -34,10 +40,11 @@ const Unfollow: React.VFC = () => {
   }, []);
 
   async function unfollowAll() {
-    for (let i = 0; i < dispatches.length; i += 1) {
-      const t = dispatches.slice();
-      t[i] += 1;
-      setDispatches(t);
+    const keys = Object.keys(dispatches);
+    for (let i = 0; i < keys.length; i += 1) {
+      const key = keys[i];
+      const value = dispatches[key] + 1;
+      setDispatches({ ...dispatches, key: value });
       // eslint-disable-next-line no-await-in-loop
       await new Promise((resolve) =>
         setTimeout(resolve, AUTO_UNFOLLOW_INTERVAL_MS)
@@ -56,7 +63,7 @@ const Unfollow: React.VFC = () => {
   };
 
   return (
-    <Container fluid className="px-2">
+    <Container fluid className="px-4">
       <Container>
         <h1>WhiteList</h1>
       </Container>
@@ -67,7 +74,7 @@ const Unfollow: React.VFC = () => {
           </Col>
         ))}
       </Row>
-      <Container>
+      <Container className="mt-2">
         <Row>
           <Col>
             <h1>Non-Follow-Backs</h1>
@@ -80,7 +87,7 @@ const Unfollow: React.VFC = () => {
         </Row>
       </Container>
       <Row className="mt-2 pt-2 g-4">
-        {users.map((user, i) => (
+        {users.map((user) => (
           <Col
             xs={12}
             sm={6}
@@ -93,7 +100,7 @@ const Unfollow: React.VFC = () => {
             <NonFollowBackUserCard
               user={user}
               towhitelist={toWhitelist}
-              dispatch={dispatches[i]}
+              dispatch={dispatches[user.id]}
             />
           </Col>
         ))}
